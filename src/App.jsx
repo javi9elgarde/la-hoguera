@@ -4,16 +4,19 @@ import { useTabla } from './useTabla.js'
 import Login from './pantallas/Login.jsx'
 import Bienvenida from './pantallas/Bienvenida.jsx'
 import Inicio from './pantallas/Inicio.jsx'
-import Compra from './pantallas/Compra.jsx'
-import Arreglos from './pantallas/Arreglos.jsx'
-import Gastos from './pantallas/Gastos.jsx'
+import Compras from './pantallas/Compras.jsx'
+import Cocina from './pantallas/Cocina.jsx'
+import Agenda from './pantallas/Agenda.jsx'
+import Casa from './pantallas/Casa.jsx'
+import Tablero from './pantallas/Tablero.jsx'
 import Ajustes from './pantallas/Ajustes.jsx'
 
 const PESTANAS = [
   { id: 'inicio', icono: '🔥', nombre: 'Hoguera' },
-  { id: 'compra', icono: '🛒', nombre: 'Compra' },
-  { id: 'arreglos', icono: '🔧', nombre: 'Arreglos' },
-  { id: 'gastos', icono: '💶', nombre: 'Gastos' },
+  { id: 'compras', icono: '🛒', nombre: 'Compras' },
+  { id: 'cocina', icono: '🍳', nombre: 'Cocina' },
+  { id: 'agenda', icono: '📅', nombre: 'Agenda' },
+  { id: 'casa', icono: '🏠', nombre: 'Casa' },
 ]
 
 export default function App() {
@@ -57,7 +60,14 @@ function ConHogar({ usuario }) {
 }
 
 function Principal({ yo, hogar, recargarPerfil }) {
-  const [pestana, setPestana] = useState('inicio')
+  // "casa:gastos" abre la pestaña Casa en el apartado Gastos
+  const [destino, setDestino] = useState({ pestana: 'inicio', apartado: null, n: 0 })
+  const pestana = destino.pestana
+  const irA = useCallback((d) => {
+    const [p, a] = d.split(':')
+    setDestino((x) => ({ pestana: p, apartado: a || null, n: x.n + 1 }))
+    window.scrollTo(0, 0)
+  }, [])
   const [aviso, setAviso] = useState(null)
   const temporizador = useRef(null)
   const { filas: miembros } = useTabla('miembros', hogar.id)
@@ -71,20 +81,25 @@ function Principal({ yo, hogar, recargarPerfil }) {
     temporizador.current = setTimeout(() => setAviso(null), 5000)
   }, [])
 
-  const props = { sesion, avisar, irA: setPestana }
+  const props = { sesion, avisar, irA, apartado: destino.apartado }
 
   return (
     <div className="app">
       <header className="cabecera">
-        <span className="marca pequena" onClick={() => setPestana('inicio')}>La Hoguera</span>
-        <button className="boton icono-boton" onClick={() => setPestana('ajustes')} aria-label="Ajustes">⚙️</button>
+        <span className="marca pequena" onClick={() => irA('inicio')}>La Hoguera</span>
+        <span>
+          <button className={`boton icono-boton ${pestana === 'tablero' ? 'activo' : ''}`} onClick={() => irA('tablero')} aria-label="Tablero de notas">💌</button>
+          <button className={`boton icono-boton ${pestana === 'ajustes' ? 'activo' : ''}`} onClick={() => irA('ajustes')} aria-label="Ajustes">⚙️</button>
+        </span>
       </header>
       <main>
-        {pestana === 'inicio' && <Inicio {...props} />}
-        {pestana === 'compra' && <Compra {...props} />}
-        {pestana === 'arreglos' && <Arreglos {...props} />}
-        {pestana === 'gastos' && <Gastos {...props} />}
-        {pestana === 'ajustes' && <Ajustes {...props} alCambiar={recargarPerfil} />}
+        {pestana === 'inicio' && <Inicio key={destino.n} {...props} />}
+        {pestana === 'compras' && <Compras key={destino.n} {...props} />}
+        {pestana === 'cocina' && <Cocina key={destino.n} {...props} />}
+        {pestana === 'agenda' && <Agenda key={destino.n} {...props} />}
+        {pestana === 'casa' && <Casa key={destino.n} {...props} />}
+        {pestana === 'tablero' && <Tablero key={destino.n} {...props} />}
+        {pestana === 'ajustes' && <Ajustes key={destino.n} {...props} alCambiar={recargarPerfil} />}
       </main>
       {aviso && (
         <div className="aviso-flotante" role="status">
@@ -96,7 +111,7 @@ function Principal({ yo, hogar, recargarPerfil }) {
       )}
       <nav className="pestanas">
         {PESTANAS.map((p) => (
-          <button key={p.id} className={pestana === p.id ? 'activa' : ''} onClick={() => setPestana(p.id)}>
+          <button key={p.id} className={pestana === p.id ? 'activa' : ''} onClick={() => irA(p.id)}>
             <span className="icono">{p.icono}</span>
             <span>{p.nombre}</span>
           </button>

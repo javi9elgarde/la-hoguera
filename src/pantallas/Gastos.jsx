@@ -67,8 +67,7 @@ export default function Gastos({ sesion, avisar }) {
   const [a, m] = mes.split('-').map(Number)
 
   return (
-    <div className="pantalla">
-      <h1>💶 Gastos</h1>
+    <div>
       <div className="selector-mes">
         <button className="boton" onClick={() => moverMes(-1)} aria-label="Mes anterior">‹</button>
         <strong>{MESES[m - 1]} {a}</strong>

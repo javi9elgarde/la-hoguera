@@ -57,8 +57,40 @@ describe('clasificador', () => {
     expect(r.map((o) => o.seccion)).toEqual(['compra', 'arreglos'])
   })
   it('secciones futuras van a la bandeja', () => {
+    const o = uno('pasar la ITV')
+    expect(o).toMatchObject({ seccion: 'bandeja', sugerida: 'coche' })
+  })
+  it('cumpleaños va a la agenda y se repite', () => {
     const o = uno('el sábado es el cumpleaños de Marta')
-    expect(o).toMatchObject({ seccion: 'bandeja', sugerida: 'social' })
+    expect(o.seccion).toBe('agenda')
+    expect(o.campos).toMatchObject({ tipo: 'cumpleanos', anual: true })
+    expect(new Date(o.campos.fecha + 'T12:00').getDay()).toBe(6)
+    expect(o.campos.titulo).toBe('Cumpleaños de Marta')
+  })
+  it('plan con varias personas no se parte', () => {
+    const r = clasificar('el sábado cena con Marta y Luis, y compra vino')
+    expect(r.map((o) => o.seccion)).toEqual(['agenda', 'compra'])
+    expect(r[0].campos.titulo).toBe('Cena con Marta y Luis')
+  })
+  it('cosas frente a súper', () => {
+    expect(uno('comprar un HDMI').seccion).toBe('cosas')
+    expect(uno('comprar lámpara para el salón').campos.titulo).toBe('Lámpara para el salón')
+    expect(uno('comprar panko').seccion).toBe('compra')
+    expect(uno('la nevera no funciona').seccion).toBe('arreglos')
+  })
+  it('menú de la semana', () => {
+    const o = uno('el lunes cenamos lentejas')
+    expect(o.seccion).toBe('menu')
+    expect(o.campos).toMatchObject({ comida: 'cena', texto: 'Lentejas' })
+    expect(new Date(o.campos.fecha + 'T12:00').getDay()).toBe(1)
+  })
+  it('notas para la pareja', () => {
+    const o = uno('dile que te quiero mucho')
+    expect(o.seccion).toBe('notas')
+    expect(o.campos.texto).toBe('Te quiero mucho')
+  })
+  it('receta nueva', () => {
+    expect(uno('receta de tortilla de patatas').campos.titulo).toBe('Tortilla de patatas')
   })
   it('sin pistas no adivina', () => {
     expect(uno('blablá').seccion).toBe(null)

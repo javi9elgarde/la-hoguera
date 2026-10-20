@@ -64,8 +64,7 @@ export default function Compra({ sesion, avisar }) {
   const autor = (id) => miembros.find((m) => m.id === id)
 
   return (
-    <div className="pantalla">
-      <h1>🛒 Lista de la compra</h1>
+    <div>
       <form className="anadir" onSubmit={anadir}>
         <input value={nuevo} onChange={(e) => setNuevo(e.target.value)} placeholder="Añadir: leche, pan y huevos" />
         <button className="boton principal" disabled={!nuevo.trim()}>+</button>

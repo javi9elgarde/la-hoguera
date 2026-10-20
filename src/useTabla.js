@@ -25,7 +25,7 @@ export function useTabla(tabla, hogarId, { orden = 'creado_en', asc = true, filt
       temporizador.current = setTimeout(recargar, 150)
     }
     const canal = supabase
-      .channel(`${tabla}-${hogarId}`)
+      .channel(`${tabla}-${hogarId}-${Math.random().toString(36).slice(2, 8)}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: tabla, filter: `hogar_id=eq.${hogarId}` }, pronto)
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: tabla }, pronto)
       .subscribe()

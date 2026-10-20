@@ -4,20 +4,22 @@
 const sinAcentos = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '')
 const normalizar = (s) => sinAcentos(s.toLowerCase()).replace(/\s+/g, ' ').trim()
 
+import { extraerFecha } from './fechas.js'
+
 // Secciones que ya existen en la app. El resto va a la bandeja con su sección sugerida.
-export const SECCIONES_ACTIVAS = ['compra', 'arreglos', 'gastos']
+export const SECCIONES_ACTIVAS = ['compra', 'cosas', 'arreglos', 'gastos', 'agenda', 'menu', 'receta', 'notas']
 
 export const NOMBRES_SECCION = {
-  compra: 'Lista de la compra',
+  compra: 'Súper',
+  cosas: 'Cosas por comprar',
   arreglos: 'Arreglos',
   gastos: 'Gastos',
-  social: 'Social',
-  citas: 'Citas',
-  coche: 'Coche',
-  recetas: 'Recetas',
-  muebles: 'Muebles',
-  ideas: 'Baúl de ideas',
+  agenda: 'Agenda',
+  menu: 'Menú de la semana',
+  receta: 'Recetas',
   notas: 'Tablero',
+  coche: 'Coche',
+  ideas: 'Baúl de ideas',
   bandeja: 'Bandeja',
 }
 
@@ -40,18 +42,21 @@ const PALABRAS = {
   compra: ['comprar', 'compra', 'compramos', 'falta', 'faltan', 'se ha acabado', 'se han acabado', 'se acabo', 'se acabaron', 'no queda', 'no quedan', 'necesitamos', 'hay que pillar', 'pillar'],
   arreglos: ['arreglar', 'arreglo', 'reparar', 'roto', 'rota', 'rotos', 'rotas', 'gotea', 'no funciona', 'no va', 'estropeado', 'estropeada', 'bombilla', 'fontanero', 'electricista', 'radiador', 'enchufe', 'grifo', 'persiana', 'cisterna', 'caldera', 'humedad', 'pintar', 'atasco', 'atascado', 'atascada', 'cambiar la', 'cambiar el', 'montar', 'colgar', 'tornillo', 'puerta', 'ventana', 'calentador', 'lavadora', 'nevera', 'horno'],
   gastos: ['he pagado', 'hemos pagado', 'pagado', 'he gastado', 'hemos gastado', 'gastado', 'gasto', 'me ha costado', 'nos ha costado', 'ha costado', 'factura', 'recibo', 'cobrado'],
-  social: ['cumpleanos', 'cumple', 'cena con', 'comida con', 'quedada', 'quedar con', 'boda', 'bautizo', 'reunion', 'fiesta', 'barbacoa', 'amigos'],
-  citas: ['cita', 'aniversario', 'escapada', 'romantic', 'san valentin', 'nosotros dos', 'plan juntos'],
+  agenda: ['cumpleanos', 'cumple', 'cena con', 'comida con', 'cenar con', 'comer con', 'quedada', 'quedar con', 'quedamos', 'boda', 'bautizo', 'comunion', 'reunion', 'fiesta', 'barbacoa', 'amigos', 'cita', 'aniversario', 'escapada', 'romantic', 'san valentin', 'nosotros dos', 'plan juntos', 'cine', 'concierto', 'medico', 'dentista', 'viaje', 'evento', 'plan'],
+  cosas: ['lampara', 'hdmi', 'cable', 'cargador', 'auriculares', 'altavoz', 'raton', 'teclado', 'monitor', 'pantalla', 'tele', 'television', 'portatil', 'funda', 'pilas', 'regleta', 'alargador', 'router', 'impresora', 'tinta', 'bombillas', 'sofa', 'estanteria', 'mueble', 'cortina', 'alfombra', 'cuadro', 'espejo', 'mesa', 'silla', 'cama', 'colchon', 'armario', 'sabanas', 'toalla', 'almohada', 'nordico', 'cojin', 'sarten', 'olla', 'cazo', 'cuchillo', 'vasos', 'platos', 'tupper', 'taza', 'planta', 'maceta', 'regalo', 'mochila', 'maleta', 'taladro', 'destornillador', 'herramienta', 'nevera', 'lavadora', 'horno', 'microondas', 'aspiradora', 'freidora', 'cafetera', 'tostadora', 'perchas', 'zapatero', 'decoracion', 'tiktok', 'youtube', 'amazon', 'ikea'],
   coche: ['gasolina', 'repostar', 'gasoil', 'itv', 'revision del coche', 'cambio de aceite', 'ruedas', 'neumaticos', 'lavar el coche', 'seguro del coche', 'taller'],
-  recetas: ['receta', 'cocinar', 'menu', 'cenamos', 'comemos', 'desayunamos'],
-  muebles: ['sofa', 'lampara', 'estanteria', 'mueble', 'cortina', 'alfombra', 'decoracion', 'decorar', 'cuadro', 'espejo', 'mesa', 'silla', 'cama', 'colchon', 'armario', 'tiktok', 'youtube'],
+  menu: ['cenamos', 'comemos', 'para cenar', 'para comer', 'de cena', 'de comida', 'menu', 'cocinamos', 'hacemos de cena', 'hacemos de comer'],
+  receta: ['receta', 'recetas'],
   ideas: ['algun dia', 'idea', 'seria guay', 'estaria bien', 'me gustaria', 'nos gustaria'],
-  notas: ['te quiero', 'dile a', 'recuerda que te', 'besos', 'te echo de menos'],
+  notas: ['te quiero', 'dile a', 'dile que', 'nota para', 'mensaje para', 'besos', 'te echo de menos', 'te amo', 'buenos dias', 'buenas noches', 'mi amor', 'carino'],
 }
 
 const URGENTE = ['urgente', 'urgencia', 'cuanto antes', 'ya mismo', 'hoy mismo', 'inunda', 'inundando', 'sin luz', 'sin agua', 'olor a gas', 'huele a gas', 'peligro', 'asap']
 
 const SOLO_URGENCIA = /^(y )?(es |esto es |que es |eso es )?(muy )?(urgente|urgencia|cuanto antes|ya mismo|hoy mismo|asap)$/
+
+const PALABRAS_CITA = ['cita', 'aniversario', 'escapada', 'romantic', 'san valentin', 'nosotros dos', 'plan juntos']
+const UNA_SOLA_FRASE = ['agenda', 'menu', 'notas', 'gastos']
 
 const ESTANCIAS = ['salon', 'cocina', 'bano', 'dormitorio', 'habitacion', 'terraza', 'garaje', 'entrada', 'pasillo', 'balcon', 'trastero', 'jardin', 'despacho']
 const ESTANCIA_BONITA = { salon: 'Salón', cocina: 'Cocina', bano: 'Baño', dormitorio: 'Dormitorio', habitacion: 'Habitación', terraza: 'Terraza', garaje: 'Garaje', entrada: 'Entrada', pasillo: 'Pasillo', balcon: 'Balcón', trastero: 'Trastero', jardin: 'Jardín', despacho: 'Despacho' }
@@ -151,6 +156,15 @@ function puntuar(n) {
   for (const [sec, lista] of Object.entries(PALABRAS)) puntos[sec] = cuenta(n, lista)
   // Un producto conocido cuenta como compra
   if (pasilloDe(n)) puntos.compra += 1
+  // "Comprar una lámpara" es una cosa, no súper: el verbo comprar suma a cosas
+  if (puntos.cosas > 0) {
+    puntos.cosas += puntos.compra
+    puntos.compra = pasilloDe(n) ? 1 : 0
+  }
+  // En un menú o una receta los alimentos son parte del plato, no de la lista
+  if (puntos.menu > 0 || puntos.receta > 0) puntos.compra = 0
+  // Un día con "cenamos" es menú; "cena con" ya lo cuenta la agenda
+  if (puntos.menu > 0 && puntos.agenda > 0 && !/\b(con|de) [a-z]/.test(n.replace(/\b(de cena|de comida|para cenar|para comer)\b/g, ''))) puntos.agenda = 0
   // Un importe empuja con fuerza a gastos
   if (RE_IMPORTE.test(n)) puntos.gastos += 2
   return puntos
@@ -177,6 +191,33 @@ function construir(seccion, seg, n) {
     }
     case 'gastos':
       return { seccion, importe, campos: { importe, categoria: categoriaDe(n), concepto: limpiarConcepto(seg) || null } }
+    case 'cosas': {
+      const { producto } = limpiarProducto(seg)
+      const enlace = (seg.match(/https?:\/\/\S+/) || [])[0] || null
+      return { seccion, campos: { titulo: producto.replace(/https?:\/\/\S+/, '').trim(), enlace, precio_estimado: importe } }
+    }
+    case 'agenda': {
+      const f = extraerFecha(seg)
+      const tipo = /\bcumple/.test(n) ? 'cumpleanos' : PALABRAS_CITA.some((p) => contiene(n, p)) ? 'cita' : 'plan'
+      const titulo = mayuscula((f ? f.resto : seg).replace(/^(apunta( que)?|recuerda( que)?|tenemos|hay)\s+/i, '').replace(/^((es|el|la|los|las)\s+)+/i, '').trim())
+      return { seccion, conFecha: Boolean(f?.conFecha), campos: { titulo: titulo || mayuscula(seg), fecha: f?.fecha || null, hora: f?.hora || null, tipo, anual: tipo === 'cumpleanos' } }
+    }
+    case 'menu': {
+      const f = extraerFecha(seg)
+      const comida = /\b(cen|noche)/.test(n) ? 'cena' : 'comida'
+      const texto = mayuscula(
+        (f ? f.resto : seg)
+          .replace(/\b(cenamos|comemos|cocinamos|para cenar|para comer|de cena|de comida|hacemos de cena|hacemos de comer|menu)\b/gi, '')
+          .replace(/^\s*(el|la|de|y)\s+/i, '')
+          .replace(/\s+/g, ' ')
+          .trim(),
+      )
+      return { seccion, conFecha: Boolean(f?.conFecha), campos: { fecha: f?.fecha || null, comida, texto } }
+    }
+    case 'receta':
+      return { seccion, campos: { titulo: mayuscula(seg.replace(/^(apunta |guarda |nueva )?(la )?recetas? (de |del |para )?/i, '').trim()) } }
+    case 'notas':
+      return { seccion, campos: { texto: mayuscula(seg.replace(/^(dile a \S+ que|dile que|nota para \S+:?|mensaje para \S+:?)\s*/i, '').trim()) } }
     default:
       return { seccion: 'bandeja', sugerida: seccion, campos: { texto: mayuscula(seg.trim()), seccion_sugerida: seccion } }
   }
@@ -189,6 +230,9 @@ function esSegura(orden, clara) {
   if (orden.seccion === 'gastos') return false
   if (orden.seccion === 'compra') return Boolean(orden.campos.producto)
   if (orden.seccion === 'arreglos') return Boolean(orden.campos.titulo)
+  if (orden.seccion === 'cosas') return Boolean(orden.campos.titulo)
+  if (orden.seccion === 'notas') return Boolean(orden.campos.texto)
+  if (orden.seccion === 'menu') return Boolean(orden.conFecha && orden.campos.texto)
   return false
 }
 
@@ -207,8 +251,18 @@ export function clasificar(frase) {
       continue
     }
     let { seccion, clara } = ganadora(puntuar(n))
-    // Un trozo sin pistas hereda la sección del anterior ("leche y huevos")
-    if (!seccion && anterior) { seccion = anterior; clara = true }
+    // Un trozo sin pistas hereda la sección del anterior ("leche y huevos")…
+    if (!seccion && anterior) {
+      // …salvo en agenda, menú y notas, donde es parte de la misma frase ("cena con Marta y Luis")
+      if (UNA_SOLA_FRASE.includes(anterior)) {
+        const unida = reconstruir(`${previa.texto} y ${seg}`, anterior)
+        unida.segura = previa.segura && esSegura(unida, true)
+        ordenes[ordenes.length - 1] = unida
+        continue
+      }
+      seccion = anterior
+      clara = true
+    }
     if (!seccion) {
       ordenes.push({ seccion: null, segura: false, texto: seg, campos: { texto: mayuscula(seg) } })
       continue
@@ -229,3 +283,12 @@ export function reconstruir(texto, seccion) {
   orden.segura = false
   return orden
 }
+
+// Para recetas: "300 g de arroz" → { producto: 'Arroz', cantidad: '300 g' }
+export function parsearIngrediente(linea) {
+  const { producto, cantidad } = limpiarProducto(linea.replace(/^[-•*]\s*/, ''))
+  return { producto, cantidad }
+}
+
+export const pasilloPara = (producto) => pasilloDe(normalizar(producto || '')) || 'otros'
+export const mismoProducto = (a, b) => normalizar(a).replace(/s$/, '') === normalizar(b).replace(/s$/, '')

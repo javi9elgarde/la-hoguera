@@ -82,8 +82,7 @@ export default function Arreglos({ sesion, avisar }) {
   )
 
   return (
-    <div className="pantalla">
-      <h1>🔧 Arreglos del hogar</h1>
+    <div>
       <form className="anadir" onSubmit={anadir}>
         <input value={titulo} onChange={(e) => setTitulo(e.target.value)} placeholder="Ej. cambiar bombilla del pasillo" />
         <button type="button" className={`boton icono-boton ${urgente ? 'activo' : ''}`} onClick={() => setUrgente(!urgente)} aria-pressed={urgente} title="Urgente">🔥</button>

@@ -164,3 +164,93 @@ begin
     end if;
   end loop;
 end $$;
+
+-- ═════════════ Entrega 2 ═════════════
+
+-- Compras generales (lámpara, HDMI…), aparte de la lista del súper
+create table if not exists cosas_compra (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  titulo text not null,
+  enlace text,
+  precio_estimado numeric(10, 2),
+  nota text,
+  estado text not null default 'pendiente' check (estado in ('pendiente', 'comprado')),
+  anadido_por uuid references miembros (id) on delete set null,
+  comprado_en timestamptz,
+  creado_en timestamptz not null default now()
+);
+
+create table if not exists recetas (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  titulo text not null,
+  raciones int,
+  minutos int,
+  ingredientes jsonb not null default '[]', -- [{ "producto": "Arroz", "cantidad": "300 g" }]
+  pasos text,
+  enlace text,
+  creado_por uuid references miembros (id) on delete set null,
+  creado_en timestamptz not null default now()
+);
+
+-- Menú semanal: un hueco por día y comida
+create table if not exists menu (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  fecha date not null,
+  comida text not null check (comida in ('comida', 'cena')),
+  receta_id uuid references recetas (id) on delete set null,
+  texto text,
+  creado_en timestamptz not null default now(),
+  unique (hogar_id, fecha, comida)
+);
+
+create table if not exists eventos (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  tipo text not null default 'plan' check (tipo in ('plan', 'cumpleanos', 'cita', 'otro')),
+  titulo text not null,
+  fecha date not null,
+  hora time,
+  lugar text,
+  nota text,
+  anual boolean not null default false, -- los cumpleaños se repiten cada año
+  creado_por uuid references miembros (id) on delete set null,
+  creado_en timestamptz not null default now()
+);
+
+create table if not exists notas (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  autor_id uuid references miembros (id) on delete set null,
+  texto text not null,
+  color text not null default '#fff3b0',
+  fijada boolean not null default false,
+  creado_en timestamptz not null default now()
+);
+
+alter table items_compra add column if not exists receta_id uuid references recetas (id) on delete set null;
+
+create index if not exists cosas_compra_hogar on cosas_compra (hogar_id);
+create index if not exists recetas_hogar on recetas (hogar_id);
+create index if not exists menu_hogar_fecha on menu (hogar_id, fecha);
+create index if not exists eventos_hogar_fecha on eventos (hogar_id, fecha);
+create index if not exists notas_hogar on notas (hogar_id);
+
+do $$
+declare t text;
+begin
+  foreach t in array array['cosas_compra', 'recetas', 'menu', 'eventos', 'notas'] loop
+    execute format('alter table %I enable row level security', t);
+    execute format('drop policy if exists "solo mi hogar" on %I', t);
+    execute format(
+      'create policy "solo mi hogar" on %I for all to authenticated
+         using (hogar_id = mi_hogar()) with check (hogar_id = mi_hogar())', t);
+    if exists (select 1 from pg_publication where pubname = 'supabase_realtime')
+       and not exists (select 1 from pg_publication_tables
+                       where pubname = 'supabase_realtime' and tablename = t) then
+      execute format('alter publication supabase_realtime add table %I', t);
+    end if;
+  end loop;
+end $$;

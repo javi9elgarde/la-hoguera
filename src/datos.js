@@ -18,6 +18,32 @@ export async function guardarOrden(orden, { hogarId, miembroId }) {
       tabla = 'gastos'
       fila = { ...base, importe: orden.campos.importe, categoria: orden.campos.categoria, concepto: orden.campos.concepto, pagado_por: miembroId }
       break
+    case 'cosas':
+      tabla = 'cosas_compra'
+      fila = { ...base, titulo: orden.campos.titulo, enlace: orden.campos.enlace, precio_estimado: orden.campos.precio_estimado, anadido_por: miembroId }
+      break
+    case 'agenda':
+      tabla = 'eventos'
+      fila = { ...base, titulo: orden.campos.titulo, fecha: orden.campos.fecha, hora: orden.campos.hora || null, tipo: orden.campos.tipo, anual: orden.campos.anual, creado_por: miembroId }
+      break
+    case 'menu': {
+      // Un hueco por día y comida: si ya había algo, se sustituye
+      const { data, error } = await supabase
+        .from('menu')
+        .upsert({ ...base, fecha: orden.campos.fecha, comida: orden.campos.comida, texto: orden.campos.texto, receta_id: orden.campos.receta_id || null }, { onConflict: 'hogar_id,fecha,comida' })
+        .select('id')
+        .single()
+      if (error) throw error
+      return { tabla: 'menu', id: data.id }
+    }
+    case 'receta':
+      tabla = 'recetas'
+      fila = { ...base, titulo: orden.campos.titulo, creado_por: miembroId }
+      break
+    case 'notas':
+      tabla = 'notas'
+      fila = { ...base, texto: orden.campos.texto, autor_id: miembroId }
+      break
     default:
       tabla = 'entradas'
       fila = { ...base, texto: orden.campos.texto || orden.texto, seccion_sugerida: orden.campos.seccion_sugerida || null, autor_id: miembroId }

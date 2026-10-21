@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { clasificar, reconstruir, NOMBRES_SECCION, SECCIONES_ACTIVAS, CATEGORIAS_GASTO } from '../clasificador.js'
 import { guardarOrden } from '../datos.js'
 import { euros } from '../datos.js'
+import { useDictado } from '../useDictado.js'
 
 const ICONO = { compra: '🥖', cosas: '📦', arreglos: '🔧', gastos: '💶', agenda: '📅', menu: '🍳', receta: '📖', notas: '💌', bandeja: '📥' }
 const OPCIONES = [...SECCIONES_ACTIVAS, 'bandeja']
@@ -14,6 +15,7 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
   const [error, setError] = useState(null)
   const [ocupado, setOcupado] = useState(false)
   const campo = useRef(null)
+  const dictado = useDictado(setTexto)
 
   useEffect(() => { campo.current?.focus() }, [])
 
@@ -66,7 +68,21 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) entender(e) }}
               placeholder="Ej. comprar leche y pan, el grifo del baño gotea…"
             />
-            <p className="pista">🎙️ Para hablar, pulsa el micrófono del teclado del móvil.</p>
+            {dictado.disponible ? (
+              <button
+                type="button"
+                className={`boton microfono ${dictado.escuchando ? 'grabando' : ''}`}
+                onClick={() => {
+                  if (dictado.escuchando) { dictado.parar(); alCambiarAnimo('escuchando') }
+                  else { dictado.empezar(texto); alCambiarAnimo('escuchando') }
+                }}
+              >
+                {dictado.escuchando ? '⏹️ Te escucho… toca para parar' : '🎙️ Hablar'}
+              </button>
+            ) : (
+              <p className="pista">🎙️ Para hablar, pulsa el micrófono del teclado del móvil.</p>
+            )}
+            {dictado.error && <p className="aviso error">{dictado.error}</p>}
             <div className="fila">
               <button type="button" className="boton" onClick={alCerrar}>Cerrar</button>
               <button className="boton principal" disabled={!texto.trim()}>Apuntar</button>

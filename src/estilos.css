@@ -274,3 +274,7 @@ h3 { font-size: 0.95rem; font-weight: 800; margin: 14px 0 6px; }
 .postit .quitar { padding: 4px; font-size: 0.9rem; }
 .postit-inicio { cursor: pointer; border: none; }
 .postit-inicio p { font-weight: 700; font-size: 1.05rem; }
+
+.microfono { width: 100%; font-size: 1.05rem; }
+.microfono.grabando { background: #fde4e0; border-color: var(--brasa); color: var(--brasa); animation: latido 1.2s ease-in-out infinite; }
+@keyframes latido { 50% { transform: scale(1.02); } }

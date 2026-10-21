@@ -26,7 +26,7 @@ export default defineConfig({
           { src: 'icono-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
-      workbox: { navigateFallback: '/la-hoguera/index.html' },
+      workbox: { navigateFallback: '/la-hoguera/index.html', globPatterns: ['**/*.{js,css,html,png}'] },
     }),
   ],
   test: { include: ['test/**/*.test.js'] },

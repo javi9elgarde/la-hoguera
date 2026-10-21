@@ -254,3 +254,6 @@ begin
     end if;
   end loop;
 end $$;
+
+-- ═════════════ Avatares dibujados ═════════════
+alter table miembros add column if not exists avatar text;

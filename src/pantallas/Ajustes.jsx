@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabase.js'
-import Avatar from '../componentes/Avatar.jsx'
+import Avatar, { AVATARES, rutaAvatar } from '../componentes/Avatar.jsx'
 
 const COLORES = ['#e8833a', '#4a90c2', '#e05d75', '#3fa37a', '#7a6fb0', '#d4a72c', '#8a5a3b']
 
@@ -44,6 +44,17 @@ export default function Ajustes({ sesion, alCambiar, avisar }) {
             <button className="boton" disabled={!nombre.trim() || nombre === yo.nombre} onClick={() => guardarPerfil({ nombre: nombre.trim() })}>Guardar</button>
           </div>
         </label>
+        <span>Tu avatar</span>
+        <div className="avatares">
+          <button className={!yo.avatar ? 'activo' : ''} onClick={() => guardarPerfil({ avatar: null })} aria-label="Sin dibujo, solo inicial">
+            <span className="avatar" style={{ background: yo.color, width: 56, height: 56, fontSize: 24 }}>{yo.nombre.charAt(0).toUpperCase()}</span>
+          </button>
+          {AVATARES.map((a) => (
+            <button key={a} className={yo.avatar === a ? 'activo' : ''} onClick={() => guardarPerfil({ avatar: a })} aria-label={`Avatar ${a}`}>
+              <span className="avatar con-imagen" style={{ width: 56, height: 56, borderColor: yo.color }}><img src={rutaAvatar(a)} alt="" /></span>
+            </button>
+          ))}
+        </div>
         <span>Tu color</span>
         <div className="colores">
           {COLORES.map((c) => (

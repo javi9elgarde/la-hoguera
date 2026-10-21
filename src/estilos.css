@@ -78,20 +78,19 @@ textarea { resize: none; }
 .avatar.vacio { width: 44px; height: 44px; background: #eadbcc; color: var(--suave); font-size: 1.2rem; }
 
 /* Personaje */
-.personaje { background: none; border: none; padding: 0; cursor: pointer; touch-action: manipulation; }
-.personaje svg { display: block; overflow: visible; }
-.personaje .llama { transform-origin: 100px 198px; animation: llama 2.4s ease-in-out infinite; }
-.personaje.intenso .llama { animation-duration: 0.9s; }
-.personaje.animo-escuchando .llama { animation: llama 1.2s ease-in-out infinite, crecer 0.3s ease-out; }
-.personaje.animo-pensando .puntos circle { animation: punto 1s infinite; }
-.personaje.animo-pensando .puntos circle:nth-child(2) { animation-delay: 0.15s; }
-.personaje.animo-pensando .puntos circle:nth-child(3) { animation-delay: 0.3s; }
-.personaje.animo-contento .llama { animation: salto 0.5s ease-out 2, llama 2.4s ease-in-out 1s infinite; }
-.personaje:active .llama { transform: scale(0.95); }
-@keyframes llama { 0%, 100% { transform: scale(1, 1) skewX(0deg); } 30% { transform: scale(1.02, 0.97) skewX(1.5deg); } 65% { transform: scale(0.98, 1.03) skewX(-1.5deg); } }
+.personaje { background: none; border: none; padding: 0; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.personaje img { display: block; transform-origin: 50% 92%; animation: llama 2.6s ease-in-out infinite; pointer-events: none; }
+.personaje.intenso img { animation-duration: 0.9s; }
+.personaje.animo-escuchando img { animation: crecer 0.3s ease-out, llama 1.2s ease-in-out 0.3s infinite; }
+.personaje.animo-pensando img { animation: pensar 1.6s ease-in-out infinite; }
+.personaje.animo-contento img { animation: salto 0.5s ease-out 2, llama 2.6s ease-in-out 1s infinite; }
+.personaje.animo-duda img { animation: ladear 1.4s ease-in-out infinite; }
+.personaje:active img { transform: scale(0.95); }
+@keyframes llama { 0%, 100% { transform: scale(1, 1); } 35% { transform: scale(1.015, 0.985); } 70% { transform: scale(0.99, 1.02); } }
 @keyframes crecer { from { transform: scale(0.9); } to { transform: scale(1); } }
 @keyframes salto { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14px) scale(1.04); } }
-@keyframes punto { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes pensar { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-3deg); } }
+@keyframes ladear { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(4deg); } 60% { transform: rotate(-2deg); } }
 
 /* Inicio */
 .escena {
@@ -278,3 +277,14 @@ h3 { font-size: 0.95rem; font-weight: 800; margin: 14px 0 6px; }
 .microfono { width: 100%; font-size: 1.05rem; }
 .microfono.grabando { background: #fde4e0; border-color: var(--brasa); color: var(--brasa); animation: latido 1.2s ease-in-out infinite; }
 @keyframes latido { 50% { transform: scale(1.02); } }
+
+.avatar.con-imagen { background: #fff; border-width: 2.5px; overflow: hidden; padding: 0; }
+.avatar.con-imagen img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
+.icono-img { width: 26px; height: 26px; object-fit: contain; display: block; }
+.pestanas button .icono-img { width: 28px; height: 28px; filter: grayscale(0.6); opacity: 0.75; }
+.pestanas button.activa .icono-img { filter: none; opacity: 1; }
+h1 .icono-img, h2 .icono-img { display: inline-block; width: 1.3em; height: 1.3em; vertical-align: -0.25em; margin-right: 4px; }
+.cabecera .icono-boton .icono-img { width: 28px; height: 28px; }
+.avatares { display: flex; gap: 12px; flex-wrap: wrap; }
+.avatares button { border: 3px solid transparent; border-radius: 50%; padding: 2px; background: none; cursor: pointer; }
+.avatares button.activo { border-color: var(--fuego); }

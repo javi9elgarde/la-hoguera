@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import Personaje from '../componentes/Personaje.jsx'
 import Avatar from '../componentes/Avatar.jsx'
 import Burbuja from '../componentes/Burbuja.jsx'
+import Icono from '../componentes/Icono.jsx'
 import { useTabla } from '../useTabla.js'
 import { borrar, euros } from '../datos.js'
 import { NOMBRES_SECCION } from '../clasificador.js'
@@ -135,7 +136,7 @@ export default function Inicio({ sesion, irA, avisar }) {
 
       {entradas.filas.length > 0 && (
         <section className="tarjeta">
-          <h2>📥 Bandeja</h2>
+          <h2><Icono img="icono-bandeja" /> Bandeja</h2>
           <p className="suave pequeno">Cosas que Chispa no ha sabido dónde poner, o de secciones que aún no existen.</p>
           <ul className="lista">
             {entradas.filas.map((e) => (

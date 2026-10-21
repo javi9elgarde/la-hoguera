@@ -3,6 +3,7 @@ import { supabase } from '../supabase.js'
 import { useTabla } from '../useTabla.js'
 import { fechaBonita, aISO } from '../fechas.js'
 import Avatar from '../componentes/Avatar.jsx'
+import Icono from '../componentes/Icono.jsx'
 
 export const COLORES_NOTA = ['#fff3b0', '#ffd6d6', '#d7f0dd', '#d6e8ff', '#ecdcff', '#ffe2c4']
 
@@ -40,7 +41,7 @@ export default function Tablero({ sesion, avisar }) {
 
   return (
     <div className="pantalla">
-      <h1>💌 Tablero</h1>
+      <h1><Icono img="icono-tablero" /> Tablero</h1>
       <form className="tarjeta formulario nueva-nota" onSubmit={enviar} style={{ background: color }}>
         <textarea rows={3} placeholder="Déjale algo bonito…" value={texto} onChange={(e) => setTexto(e.target.value)} />
         <div className="fila">

@@ -10,13 +10,14 @@ import Agenda from './pantallas/Agenda.jsx'
 import Casa from './pantallas/Casa.jsx'
 import Tablero from './pantallas/Tablero.jsx'
 import Ajustes from './pantallas/Ajustes.jsx'
+import Icono from './componentes/Icono.jsx'
 
 const PESTANAS = [
-  { id: 'inicio', icono: '🔥', nombre: 'Hoguera' },
-  { id: 'compras', icono: '🛒', nombre: 'Compras' },
+  { id: 'inicio', img: 'chispa-reposo', nombre: 'Hoguera' },
+  { id: 'compras', img: 'icono-compras', nombre: 'Compras' },
   { id: 'cocina', icono: '🍳', nombre: 'Cocina' },
   { id: 'agenda', icono: '📅', nombre: 'Agenda' },
-  { id: 'casa', icono: '🏠', nombre: 'Casa' },
+  { id: 'casa', img: 'icono-casa', nombre: 'Casa' },
 ]
 
 export default function App() {
@@ -88,7 +89,7 @@ function Principal({ yo, hogar, recargarPerfil }) {
       <header className="cabecera">
         <span className="marca pequena" onClick={() => irA('inicio')}>La Hoguera</span>
         <span>
-          <button className={`boton icono-boton ${pestana === 'tablero' ? 'activo' : ''}`} onClick={() => irA('tablero')} aria-label="Tablero de notas">💌</button>
+          <button className={`boton icono-boton ${pestana === 'tablero' ? 'activo' : ''}`} onClick={() => irA('tablero')} aria-label="Tablero de notas"><Icono img="icono-tablero" /></button>
           <button className={`boton icono-boton ${pestana === 'ajustes' ? 'activo' : ''}`} onClick={() => irA('ajustes')} aria-label="Ajustes">⚙️</button>
         </span>
       </header>
@@ -112,7 +113,7 @@ function Principal({ yo, hogar, recargarPerfil }) {
       <nav className="pestanas">
         {PESTANAS.map((p) => (
           <button key={p.id} className={pestana === p.id ? 'activa' : ''} onClick={() => irA(p.id)}>
-            <span className="icono">{p.icono}</span>
+            <Icono img={p.img} emoji={p.icono} />
             <span>{p.nombre}</span>
           </button>
         ))}

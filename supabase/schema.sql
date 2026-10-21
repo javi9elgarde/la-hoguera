@@ -257,3 +257,6 @@ end $$;
 
 -- ═════════════ Avatares dibujados ═════════════
 alter table miembros add column if not exists avatar text;
+
+-- Que la API vea al momento las columnas nuevas
+notify pgrst, 'reload schema';

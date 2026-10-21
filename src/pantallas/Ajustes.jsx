@@ -9,7 +9,12 @@ export default function Ajustes({ sesion, alCambiar, avisar }) {
   const [nombre, setNombre] = useState(yo.nombre)
 
   async function guardarPerfil(cambio) {
-    await supabase.from('miembros').update(cambio).eq('id', yo.id)
+    const { error } = await supabase.from('miembros').update(cambio).eq('id', yo.id)
+    if (error) {
+      // Si falta la columna "avatar", es que no se ha vuelto a pegar el schema.sql en Supabase
+      avisar(/avatar/.test(error.message) ? 'Falta actualizar la base de datos (pegar schema.sql en Supabase)' : `No se ha podido guardar: ${error.message}`)
+      return
+    }
     alCambiar()
   }
 

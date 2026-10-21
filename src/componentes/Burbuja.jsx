@@ -3,6 +3,7 @@ import { clasificar, reconstruir, NOMBRES_SECCION, SECCIONES_ACTIVAS, CATEGORIAS
 import { guardarOrden } from '../datos.js'
 import { euros } from '../datos.js'
 import { useDictado } from '../useDictado.js'
+import { necesitaIA, preguntarIA } from '../ia.js'
 
 const ICONO = { compra: '🥖', cosas: '📦', arreglos: '🔧', gastos: '💶', agenda: '📅', menu: '🍳', receta: '📖', notas: '💌', bandeja: '📥' }
 const OPCIONES = [...SECCIONES_ACTIVAS, 'bandeja']
@@ -21,10 +22,16 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
 
   async function entender(e) {
     e?.preventDefault()
-    if (!texto.trim()) return
+    if (!texto.trim() || ocupado) return
     alCambiarAnimo('pensando')
-    await new Promise((r) => setTimeout(r, 450))
-    const r = clasificar(texto)
+    let r = clasificar(texto)
+    if (necesitaIA(r)) {
+      setOcupado(true)
+      r = (await preguntarIA(texto)) || r
+      setOcupado(false)
+    } else {
+      await new Promise((ok) => setTimeout(ok, 450))
+    }
     if (r.length && r.every((o) => o.segura)) {
       await guardarTodo(r)
       return
@@ -85,13 +92,13 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
             {dictado.error && <p className="aviso error">{dictado.error}</p>}
             <div className="fila">
               <button type="button" className="boton" onClick={alCerrar}>Cerrar</button>
-              <button className="boton principal" disabled={!texto.trim()}>Apuntar</button>
+              <button className="boton principal" disabled={!texto.trim() || ocupado}>{ocupado ? 'Pensando…' : 'Apuntar'}</button>
             </div>
           </form>
         )}
         {ordenes && (
           <div className="resultados">
-            <p className="titulo-burbuja">{ordenes.length === 1 ? 'Esto he entendido:' : `He entendido ${ordenes.length} cosas:`}</p>
+            <p className="titulo-burbuja">{ordenes.length === 1 ? 'Esto he entendido:' : `He entendido ${ordenes.length} cosas:`}{ordenes.some((o) => o.ia) && <span className="chip">✨ IA</span>}</p>
             {ordenes.map((o, i) => (
               <Resultado key={i} orden={o} alCambiar={(c) => cambiar(i, c)} alQuitar={() => quitar(i)} />
             ))}

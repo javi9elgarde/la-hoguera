@@ -224,7 +224,7 @@ function construir(seccion, seg, n) {
 }
 
 // Decide si se puede guardar sin preguntar
-function esSegura(orden, clara) {
+export function esSegura(orden, clara = true) {
   if (!clara) return false
   if (orden.urgente) return false
   if (orden.seccion === 'gastos') return false

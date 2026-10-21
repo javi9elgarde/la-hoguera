@@ -71,7 +71,7 @@ function Principal({ yo, hogar, recargarPerfil }) {
   }, [])
   const [aviso, setAviso] = useState(null)
   const temporizador = useRef(null)
-  const { filas: miembros } = useTabla('miembros', hogar.id)
+  const { filas: miembros, recargar: recargarMiembros } = useTabla('miembros', hogar.id)
   const yoActual = miembros.find((m) => m.id === yo.id) || yo
   const sesion = { hogar, yo: yoActual, miembros: miembros.length ? miembros : [yo] }
 
@@ -100,7 +100,7 @@ function Principal({ yo, hogar, recargarPerfil }) {
         {pestana === 'agenda' && <Agenda key={destino.n} {...props} />}
         {pestana === 'casa' && <Casa key={destino.n} {...props} />}
         {pestana === 'tablero' && <Tablero key={destino.n} {...props} />}
-        {pestana === 'ajustes' && <Ajustes key={destino.n} {...props} alCambiar={recargarPerfil} />}
+        {pestana === 'ajustes' && <Ajustes key={destino.n} {...props} alCambiar={() => { recargarPerfil(); recargarMiembros() }} />}
       </main>
       {aviso && (
         <div className="aviso-flotante" role="status">

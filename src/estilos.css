@@ -301,3 +301,4 @@ h1 .icono-img, h2 .icono-img { display: inline-block; width: 1.3em; height: 1.3e
 .texto-recurso p { margin: 6px 0 0; white-space: pre-wrap; color: var(--suave); }
 .foto-grande { align-items: center; background: rgba(20, 12, 6, 0.85); }
 .foto-grande img { max-width: 96vw; max-height: 90vh; border-radius: 12px; }
+.interruptor-ia { display: flex; font-size: 0.85rem; color: var(--suave); margin: 4px 0; }

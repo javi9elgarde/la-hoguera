@@ -17,6 +17,14 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
   const [ocupado, setOcupado] = useState(false)
   const campo = useRef(null)
   const dictado = useDictado(setTexto)
+  // Cada móvil recuerda si quiere usar la IA (cuesta un poco por frase) o solo palabras clave
+  const [conIA, setConIA] = useState(() => {
+    try { return localStorage.getItem('chispa-ia') !== 'no' } catch { return true }
+  })
+  function cambiarIA(v) {
+    setConIA(v)
+    try { localStorage.setItem('chispa-ia', v ? 'si' : 'no') } catch { /* sin almacenamiento */ }
+  }
 
   useEffect(() => { campo.current?.focus() }, [])
 
@@ -25,7 +33,7 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
     if (!texto.trim() || ocupado) return
     alCambiarAnimo('pensando')
     let r = clasificar(texto)
-    if (necesitaIA(r)) {
+    if (conIA && necesitaIA(r)) {
       setOcupado(true)
       r = (await preguntarIA(texto)) || r
       setOcupado(false)
@@ -90,6 +98,10 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
               <p className="pista">🎙️ Para hablar, pulsa el micrófono del teclado del móvil.</p>
             )}
             {dictado.error && <p className="aviso error">{dictado.error}</p>}
+            <label className="interruptor interruptor-ia">
+              <input type="checkbox" checked={conIA} onChange={(e) => cambiarIA(e.target.checked)} />
+              ✨ IA {conIA ? 'activada: solo si no entiendo la frase' : 'apagada: solo palabras clave'}
+            </label>
             <div className="fila">
               <button type="button" className="boton" onClick={alCerrar}>Cerrar</button>
               <button className="boton principal" disabled={!texto.trim() || ocupado}>{ocupado ? 'Pensando…' : 'Apuntar'}</button>

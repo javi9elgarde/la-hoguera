@@ -42,6 +42,8 @@ export function convertir(o) {
       orden = { conFecha: Boolean(fechaValida(o.fecha)), campos: { fecha: fechaValida(o.fecha), comida: o.comida || 'comida', texto: mayuscula(o.nota || o.titulo || t) } }
       break
     case 'receta':
+    case 'ideas':
+    case 'recursos':
       orden = { campos: { titulo: mayuscula(o.titulo || t) } }
       break
     case 'notas':

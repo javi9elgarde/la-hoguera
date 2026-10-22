@@ -81,15 +81,15 @@ export default function Inicio({ sesion, irA, avisar }) {
       <div className="tarjetas">
         <button className={`tarjeta resumen ${urgentes.length ? 'roja' : ''}`} onClick={() => irA('casa:arreglos')}>
           <span className="numero">{urgentes.length}</span>
-          <span>{urgentes.length === 1 ? 'urgencia' : 'urgencias'}</span>
+          <span>{urgentes.length === 1 ? 'Urgencia' : 'Urgencias'}</span>
         </button>
         <button className="tarjeta resumen" onClick={() => irA('compras')}>
           <span className="numero">{porComprar.length}</span>
-          <span>por comprar</span>
+          <span>Por Comprar</span>
         </button>
-        <button className="tarjeta resumen" onClick={() => irA('casa:gastos')}>
+        <button className="tarjeta resumen" onClick={() => irA('compras:gastos')}>
           <span className="numero pequeno">{euros(totalMes)}</span>
-          <span>este mes</span>
+          <span>Este Mes</span>
         </button>
       </div>
 

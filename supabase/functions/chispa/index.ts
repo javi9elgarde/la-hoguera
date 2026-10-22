@@ -13,7 +13,7 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const SECCIONES = ['compra', 'cosas', 'arreglos', 'gastos', 'agenda', 'menu', 'receta', 'notas', 'bandeja']
+const SECCIONES = ['compra', 'cosas', 'arreglos', 'recursos', 'ideas', 'gastos', 'agenda', 'menu', 'receta', 'notas', 'bandeja']
 const CATEGORIAS = ['comida', 'hogar', 'coche', 'facturas', 'ocio', 'salud', 'ropa', 'otros']
 
 const texto = { anyOf: [{ type: 'string' }, { type: 'null' }] }
@@ -49,7 +49,7 @@ const ESQUEMA = {
           tipo: opciones(['plan', 'cumpleanos', 'cita', 'otro']),
           comida: opciones(['comida', 'cena']),
           nota: texto,
-          seccion_sugerida: opciones(['coche', 'ideas', 'muebles', 'otros']),
+          seccion_sugerida: opciones(['coche', 'otros']),
         },
       },
     },
@@ -65,12 +65,14 @@ Secciones:
 - compra: productos del supermercado (comida, limpieza, higiene). Una orden por producto. producto = nombre corto con mayúscula inicial ("Leche"), cantidad si la dicen ("2 litros", "una docena").
 - cosas: compras que no son del súper (lámpara, cable HDMI, regalo, ropa). titulo, enlace si hay URL, precio_estimado si lo dicen.
 - arreglos: algo de casa que hay que arreglar o hacer (grifo que gotea, colgar un cuadro). titulo claro en infinitivo o descriptivo, estancia si se nombra ("Baño", "Cocina"…), urgente si lo dicen o es una avería seria (fuga de agua, sin luz).
+- recursos: datos de la casa para tener a mano: medidas de muebles o huecos, contraseña del wifi, modelos y referencias. titulo = el dato completo y claro ("Sofá: 210 × 90 cm").
+- ideas: reformas o mejoras de la casa para el futuro ("algún día cambiar el suelo"). titulo = la idea en infinitivo, estancia si se nombra.
 - gastos: dinero ya gastado. importe en euros (número), categoria, concepto corto.
 - agenda: planes, citas, cumpleaños, eventos con fecha. titulo corto sin la fecha, fecha, hora si la hay, tipo (cumpleanos para cumpleaños, cita para médico/peluquería/gestiones, plan para planes con gente, otro).
 - menu: lo que van a comer o cenar un día concreto. fecha, comida ("comida" o "cena"; si no lo dicen, "cena" por la noche y "comida" en otro caso), nota = el plato.
 - receta: guardar una receta para hacer. titulo = nombre del plato.
 - notas: mensajes o recordatorios para la pareja ("dile que…", "no te olvides de…") sin fecha concreta. nota = el mensaje limpio, sin "dile que".
-- bandeja: lo que no encaje en nada de lo anterior. nota = la frase, seccion_sugerida si va de coche, ideas, muebles u otros.
+- bandeja: lo que no encaje en nada de lo anterior. nota = la frase, seccion_sugerida "coche" si va del coche, si no "otros".
 
 Reglas:
 - Una frase puede tener varias órdenes ("compra leche y apunta que el lunes cenamos pasta" = compra + menu).

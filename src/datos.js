@@ -40,6 +40,14 @@ export async function guardarOrden(orden, { hogarId, miembroId }) {
       tabla = 'recetas'
       fila = { ...base, titulo: orden.campos.titulo, creado_por: miembroId }
       break
+    case 'ideas':
+      tabla = 'ideas'
+      fila = { ...base, titulo: orden.campos.titulo, creado_por: miembroId }
+      break
+    case 'recursos':
+      tabla = 'recursos'
+      fila = { ...base, titulo: orden.campos.titulo, creado_por: miembroId }
+      break
     case 'notas':
       tabla = 'notas'
       fila = { ...base, texto: orden.campos.texto, autor_id: miembroId }

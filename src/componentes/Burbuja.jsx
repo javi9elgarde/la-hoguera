@@ -5,7 +5,7 @@ import { euros } from '../datos.js'
 import { useDictado } from '../useDictado.js'
 import { necesitaIA, preguntarIA } from '../ia.js'
 
-const ICONO = { compra: '🥖', cosas: '📦', arreglos: '🔧', gastos: '💶', agenda: '📅', menu: '🍳', receta: '📖', notas: '💌', bandeja: '📥' }
+const ICONO = { compra: '🍎', cosas: '📦', arreglos: '🔧', recursos: '📐', ideas: '💡', gastos: '💶', agenda: '📅', menu: '🍳', receta: '📖', notas: '💌', bandeja: '📥' }
 const OPCIONES = [...SECCIONES_ACTIVAS, 'bandeja']
 const TIPOS_EVENTO = { plan: '🎉 Plan', cumpleanos: '🎂 Cumpleaños', cita: '💕 Cita', otro: '📌 Otro' }
 
@@ -130,7 +130,7 @@ function Resultado({ orden, alCambiar, alQuitar }) {
       {sec === 'compra' && (
         <input value={orden.campos.producto || ''} onChange={(e) => campo('producto', e.target.value)} />
       )}
-      {(sec === 'cosas' || sec === 'receta') && (
+      {(sec === 'cosas' || sec === 'receta' || sec === 'ideas' || sec === 'recursos') && (
         <input value={orden.campos.titulo || ''} onChange={(e) => campo('titulo', e.target.value)} />
       )}
       {sec === 'notas' && (

@@ -7,11 +7,11 @@ const normalizar = (s) => sinAcentos(s.toLowerCase()).replace(/\s+/g, ' ').trim(
 import { extraerFecha } from './fechas.js'
 
 // Secciones que ya existen en la app. El resto va a la bandeja con su sección sugerida.
-export const SECCIONES_ACTIVAS = ['compra', 'cosas', 'arreglos', 'gastos', 'agenda', 'menu', 'receta', 'notas']
+export const SECCIONES_ACTIVAS = ['compra', 'cosas', 'gastos', 'arreglos', 'recursos', 'ideas', 'agenda', 'menu', 'receta', 'notas']
 
 export const NOMBRES_SECCION = {
-  compra: 'Súper',
-  cosas: 'Cosas por comprar',
+  compra: 'Comidas',
+  cosas: 'Otras compras',
   arreglos: 'Arreglos',
   gastos: 'Gastos',
   agenda: 'Agenda',
@@ -19,7 +19,8 @@ export const NOMBRES_SECCION = {
   receta: 'Recetas',
   notas: 'Tablero',
   coche: 'Coche',
-  ideas: 'Baúl de ideas',
+  recursos: 'Recursos de casa',
+  ideas: 'Ideas para la casa',
   bandeja: 'Bandeja',
 }
 
@@ -47,7 +48,8 @@ const PALABRAS = {
   coche: ['gasolina', 'repostar', 'gasoil', 'itv', 'revision del coche', 'cambio de aceite', 'ruedas', 'neumaticos', 'lavar el coche', 'seguro del coche', 'taller'],
   menu: ['cenamos', 'comemos', 'para cenar', 'para comer', 'de cena', 'de comida', 'menu', 'cocinamos', 'hacemos de cena', 'hacemos de comer'],
   receta: ['receta', 'recetas'],
-  ideas: ['algun dia', 'idea', 'seria guay', 'estaria bien', 'me gustaria', 'nos gustaria'],
+  ideas: ['algun dia', 'idea', 'seria guay', 'estaria bien', 'me gustaria', 'nos gustaria', 'reforma', 'reformar', 'en el futuro', 'cuando podamos', 'cuando tengamos dinero', 'hacer obra'],
+  recursos: ['medida', 'medidas', 'mide', 'miden', 'centimetros', ' cm', 'de ancho', 'de alto', 'de fondo', 'contrasena del wifi', 'clave del wifi', 'numero de serie', 'modelo de', 'referencia de', 'apunta que el', 'apunta que la', 'para tener en cuenta'],
   notas: ['te quiero', 'dile a', 'dile que', 'nota para', 'mensaje para', 'besos', 'te echo de menos', 'te amo', 'buenos dias', 'buenas noches', 'mi amor', 'carino'],
 }
 
@@ -161,6 +163,9 @@ function puntuar(n) {
     puntos.cosas += puntos.compra
     puntos.compra = pasilloDe(n) ? 1 : 0
   }
+  // Medidas de un mueble son un recurso, no una compra; una reforma soñada es una idea, no un arreglo
+  if (puntos.recursos > 0) { puntos.cosas = 0; puntos.compra = 0 }
+  if (puntos.ideas > 0) { puntos.arreglos = 0; puntos.cosas = 0; puntos.compra = 0 }
   // En un menú o una receta los alimentos son parte del plato, no de la lista
   if (puntos.menu > 0 || puntos.receta > 0) puntos.compra = 0
   // Un día con "cenamos" es menú; "cena con" ya lo cuenta la agenda
@@ -216,6 +221,10 @@ function construir(seccion, seg, n) {
     }
     case 'receta':
       return { seccion, campos: { titulo: mayuscula(seg.replace(/^(apunta |guarda |nueva )?(la )?recetas? (de |del |para )?/i, '').trim()) } }
+    case 'ideas':
+      return { seccion, campos: { titulo: mayuscula(seg.replace(/^(idea:?|una idea:?|algun dia|algún día|en el futuro|seria guay|sería guay|estaria bien|estaría bien|me gustaria|me gustaría|nos gustaria|nos gustaría)\s*(que )?/i, '').trim()) || mayuscula(seg) } }
+    case 'recursos':
+      return { seccion, campos: { titulo: mayuscula(seg.replace(/^(apunta( que)?|recuerda( que)?|para tener en cuenta:?)\s*/i, '').trim()) } }
     case 'notas':
       return { seccion, campos: { texto: mayuscula(seg.replace(/^(dile a \S+ que|dile que|nota para \S+:?|mensaje para \S+:?)\s*/i, '').trim()) } }
     default:
@@ -232,6 +241,7 @@ export function esSegura(orden, clara = true) {
   if (orden.seccion === 'arreglos') return Boolean(orden.campos.titulo)
   if (orden.seccion === 'cosas') return Boolean(orden.campos.titulo)
   if (orden.seccion === 'notas') return Boolean(orden.campos.texto)
+  if (orden.seccion === 'ideas' || orden.seccion === 'recursos') return Boolean(orden.campos.titulo)
   if (orden.seccion === 'menu') return Boolean(orden.conFecha && orden.campos.texto)
   return false
 }

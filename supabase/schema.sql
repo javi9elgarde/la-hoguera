@@ -258,5 +258,61 @@ end $$;
 -- ═════════════ Avatares dibujados ═════════════
 alter table miembros add column if not exists avatar text;
 
+-- ═════════════ Casa: recursos e ideas ═════════════
+
+-- Medidas de muebles, fotos de etiquetas, cosas a tener en cuenta
+create table if not exists recursos (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  titulo text not null,
+  texto text,
+  estancia text,
+  imagen text, -- ruta en el almacén "recursos": <hogar_id>/<archivo>.jpg
+  creado_por uuid references miembros (id) on delete set null,
+  creado_en timestamptz not null default now()
+);
+
+-- Futuras reformas y mejoras
+create table if not exists ideas (
+  id uuid primary key default gen_random_uuid(),
+  hogar_id uuid not null references hogares (id) on delete cascade,
+  titulo text not null,
+  descripcion text,
+  estancia text,
+  presupuesto numeric(10, 2),
+  estado text not null default 'idea' check (estado in ('idea', 'hecha')),
+  creado_por uuid references miembros (id) on delete set null,
+  creado_en timestamptz not null default now()
+);
+
+create index if not exists recursos_hogar on recursos (hogar_id);
+create index if not exists ideas_hogar on ideas (hogar_id);
+
+do $$
+declare t text;
+begin
+  foreach t in array array['recursos', 'ideas'] loop
+    execute format('alter table %I enable row level security', t);
+    execute format('drop policy if exists "solo mi hogar" on %I', t);
+    execute format(
+      'create policy "solo mi hogar" on %I for all to authenticated
+         using (hogar_id = mi_hogar()) with check (hogar_id = mi_hogar())', t);
+    if exists (select 1 from pg_publication where pubname = 'supabase_realtime')
+       and not exists (select 1 from pg_publication_tables
+                       where pubname = 'supabase_realtime' and tablename = t) then
+      execute format('alter publication supabase_realtime add table %I', t);
+    end if;
+  end loop;
+end $$;
+
+-- Almacén privado de fotos: cada hogar solo ve su carpeta
+insert into storage.buckets (id, name, public) values ('recursos', 'recursos', false)
+on conflict (id) do nothing;
+
+drop policy if exists "fotos de mi hogar" on storage.objects;
+create policy "fotos de mi hogar" on storage.objects for all to authenticated
+  using (bucket_id = 'recursos' and (storage.foldername(name))[1] = mi_hogar()::text)
+  with check (bucket_id = 'recursos' and (storage.foldername(name))[1] = mi_hogar()::text);
+
 -- Que la API vea al momento las columnas nuevas
 notify pgrst, 'reload schema';

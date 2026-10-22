@@ -288,3 +288,16 @@ h1 .icono-img, h2 .icono-img { display: inline-block; width: 1.3em; height: 1.3e
 .avatares { display: flex; gap: 12px; flex-wrap: wrap; }
 .avatares button { border: 3px solid transparent; border-radius: 50%; padding: 2px; background: none; cursor: pointer; }
 .avatares button.activo { border-color: var(--fuego); }
+
+/* Casa: recursos e ideas */
+.segmentos button .icono-img { width: 20px; height: 20px; }
+.segmentos button { font-size: 0.92rem; }
+.boton.foto { text-align: center; cursor: pointer; }
+.recursos { display: flex; flex-direction: column; gap: 0; }
+.recurso { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.recurso img, .recurso .foto-cargando { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; flex-shrink: 0; background: #f6e6d4; display: flex; align-items: center; justify-content: center; }
+.texto-recurso { flex: 1; min-width: 0; }
+.texto-recurso .chip { margin-left: 8px; }
+.texto-recurso p { margin: 6px 0 0; white-space: pre-wrap; color: var(--suave); }
+.foto-grande { align-items: center; background: rgba(20, 12, 6, 0.85); }
+.foto-grande img { max-width: 96vw; max-height: 90vh; border-radius: 12px; }

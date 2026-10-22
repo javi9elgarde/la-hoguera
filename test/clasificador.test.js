@@ -101,3 +101,20 @@ describe('clasificador', () => {
     expect(extraerImporte('nada')).toBe(null)
   })
 })
+
+describe('Casa: recursos e ideas', () => {
+  it('las medidas van a recursos', () => {
+    const [o] = clasificar('el sofá mide 210 por 90 cm')
+    expect(o.seccion).toBe('recursos')
+    expect(o.segura).toBe(true)
+  })
+  it('una reforma soñada va a ideas', () => {
+    const [o] = clasificar('idea: pintar el dormitorio de verde')
+    expect(o.seccion).toBe('ideas')
+    expect(o.campos.titulo).toBe('Pintar el dormitorio de verde')
+  })
+  it('lo de siempre sigue igual', () => {
+    expect(clasificar('comprar una lámpara')[0].seccion).toBe('cosas')
+    expect(clasificar('el grifo del baño gotea')[0].seccion).toBe('arreglos')
+  })
+})

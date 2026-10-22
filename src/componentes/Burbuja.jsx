@@ -4,13 +4,14 @@ import { guardarOrden } from '../datos.js'
 import { euros } from '../datos.js'
 import { useDictado } from '../useDictado.js'
 import { necesitaIA, preguntarIA } from '../ia.js'
+import Personaje from './Personaje.jsx'
 
 const ICONO = { compra: '🍎', cosas: '📦', arreglos: '🔧', recursos: '📐', ideas: '💡', gastos: '💶', agenda: '📅', menu: '🍳', receta: '📖', notas: '💌', bandeja: '📥' }
 const OPCIONES = [...SECCIONES_ACTIVAS, 'bandeja']
 const TIPOS_EVENTO = { plan: '🎉 Plan', cumpleanos: '🎂 Cumpleaños', cita: '💕 Cita', otro: '📌 Otro' }
 
 // La burbuja del personaje: escribir o dictar, ver qué ha entendido y guardar
-export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar }) {
+export default function Burbuja({ contexto, animo, alCambiarAnimo, alCerrar, alGuardar }) {
   const [texto, setTexto] = useState('')
   const [ordenes, setOrdenes] = useState(null)
   const [error, setError] = useState(null)
@@ -71,7 +72,10 @@ export default function Burbuja({ contexto, alCambiarAnimo, alCerrar, alGuardar 
   const quitar = (i) => setOrdenes((l) => l.filter((_, j) => j !== i))
 
   return (
-    <div className="velo" onClick={alCerrar}>
+    <div className="velo velo-chispa" onClick={alCerrar}>
+      <div className="chispa-encima" onClick={(e) => e.stopPropagation()}>
+        <Personaje animo={animo} tamano={150} />
+      </div>
       <div className="burbuja" onClick={(e) => e.stopPropagation()}>
         {!ordenes && (
           <form onSubmit={entender}>

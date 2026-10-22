@@ -48,7 +48,7 @@ export default function Inicio({ sesion, irA, avisar }) {
 
   function abrir() {
     setAbierta(true)
-    setAnimo('escuchando')
+    setAnimo('pensando')
   }
 
   function cerrar() {
@@ -159,7 +159,7 @@ export default function Inicio({ sesion, irA, avisar }) {
         </section>
       )}
 
-      {abierta && <Burbuja contexto={{ hogarId: hogar.id, miembroId: yo.id }} alCambiarAnimo={setAnimo} alCerrar={cerrar} alGuardar={guardado} />}
+      {abierta && <Burbuja contexto={{ hogarId: hogar.id, miembroId: yo.id }} animo={animo} alCambiarAnimo={setAnimo} alCerrar={cerrar} alGuardar={guardado} />}
     </div>
   )
 }

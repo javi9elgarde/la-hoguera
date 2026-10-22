@@ -10,7 +10,7 @@ import { extraerFecha } from './fechas.js'
 export const SECCIONES_ACTIVAS = ['compra', 'cosas', 'gastos', 'arreglos', 'recursos', 'ideas', 'agenda', 'menu', 'receta', 'notas']
 
 export const NOMBRES_SECCION = {
-  compra: 'Comidas',
+  compra: 'Comida',
   cosas: 'Otras compras',
   arreglos: 'Arreglos',
   gastos: 'Gastos',

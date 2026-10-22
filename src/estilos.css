@@ -302,3 +302,16 @@ h1 .icono-img, h2 .icono-img { display: inline-block; width: 1.3em; height: 1.3e
 .foto-grande { align-items: center; background: rgba(20, 12, 6, 0.85); }
 .foto-grande img { max-width: 96vw; max-height: 90vh; border-radius: 12px; }
 .interruptor-ia { display: flex; font-size: 0.85rem; color: var(--suave); margin: 4px 0; }
+
+/* Al abrir Chispa: fondo borroso y Chispa grande encima de la burbuja */
+.velo-chispa {
+  flex-direction: column; align-items: center; background: rgba(59, 36, 22, 0.28);
+  -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px); animation: aparecer 0.25s ease-out;
+}
+@keyframes aparecer { from { opacity: 0; } }
+.chispa-encima { margin-bottom: -18px; z-index: 1; animation: asomar 0.35s cubic-bezier(0.3, 1.5, 0.6, 1); }
+.chispa-encima .personaje { pointer-events: none; animation: flotar 2.4s ease-in-out infinite; }
+.chispa-encima .llama { width: min(150px, 20dvh); height: auto; filter: drop-shadow(0 8px 18px rgba(232, 131, 58, 0.45)); }
+@keyframes asomar { from { transform: translateY(60px) scale(0.6); opacity: 0; } }
+@keyframes flotar { 50% { transform: translateY(-6px); } }
+.velo-chispa .burbuja { max-height: calc(75dvh - min(150px, 20dvh)); }

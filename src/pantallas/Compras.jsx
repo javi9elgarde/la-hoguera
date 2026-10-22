@@ -11,7 +11,7 @@ export default function Compras(props) {
     <div className="pantalla">
       <h1><Icono img="icono-compras" /> Compras</h1>
       <Segmentos
-        opciones={[{ id: 'super', nombre: '🍎 Comidas' }, { id: 'cosas', nombre: '📦 Otros' }, { id: 'gastos', nombre: '💶 Gastos' }]}
+        opciones={[{ id: 'super', nombre: '🍎 Comida' }, { id: 'cosas', nombre: '📦 Otros' }, { id: 'gastos', nombre: '💶 Gastos' }]}
         valor={apartado}
         alCambiar={setApartado}
       />

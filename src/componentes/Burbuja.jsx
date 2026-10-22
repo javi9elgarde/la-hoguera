@@ -29,6 +29,19 @@ export default function Burbuja({ contexto, animo, alCambiarAnimo, alCerrar, alG
 
   useEffect(() => { campo.current?.focus() }, [])
 
+  // El velo ocupa solo la parte visible de la pantalla, para que el teclado no tape la burbuja
+  const [visible, setVisible] = useState(null)
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const medir = () => setVisible({ top: vv.offsetTop, height: vv.height })
+    medir()
+    vv.addEventListener('resize', medir)
+    vv.addEventListener('scroll', medir)
+    return () => { vv.removeEventListener('resize', medir); vv.removeEventListener('scroll', medir) }
+  }, [])
+  const tamanoChispa = Math.round(Math.max(80, Math.min(150, (visible?.height ?? 700) * 0.22)))
+
   async function entender(e) {
     e?.preventDefault()
     if (!texto.trim() || ocupado) return
@@ -72,9 +85,9 @@ export default function Burbuja({ contexto, animo, alCambiarAnimo, alCerrar, alG
   const quitar = (i) => setOrdenes((l) => l.filter((_, j) => j !== i))
 
   return (
-    <div className="velo velo-chispa" onClick={alCerrar}>
+    <div className="velo velo-chispa" onClick={alCerrar} style={visible ? { top: visible.top, height: visible.height, bottom: 'auto' } : undefined}>
       <div className="chispa-encima" onClick={(e) => e.stopPropagation()}>
-        <Personaje animo={animo} tamano={150} />
+        <Personaje animo={animo} tamano={tamanoChispa} />
       </div>
       <div className="burbuja" onClick={(e) => e.stopPropagation()}>
         {!ordenes && (

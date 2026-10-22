@@ -3,6 +3,7 @@ import { supabase } from '../supabase.js'
 import { useTabla } from '../useTabla.js'
 import { aISO, deISO, hoyISO, fechaBonita } from '../fechas.js'
 import Avatar from '../componentes/Avatar.jsx'
+import Icono from '../componentes/Icono.jsx'
 
 export const TIPOS = {
   plan: { nombre: 'Plan', icono: '🎉', color: '#4a90c2' },
@@ -100,7 +101,7 @@ export default function Agenda({ sesion, avisar }) {
 
   return (
     <div className="pantalla">
-      <h1>📅 Agenda</h1>
+      <h1><Icono img="icono-agenda" /> Agenda</h1>
       <div className="filtros">
         {[['todo', 'Todo'], ...Object.entries(TIPOS).map(([k, v]) => [k, `${v.icono} ${v.nombre}`])].map(([k, n]) => (
           <button key={k} className={`chip boton-chip ${filtro === k ? 'elegido' : ''}`} onClick={() => setFiltro(k)}>{n}</button>

@@ -16,7 +16,7 @@ const PESTANAS = [
   { id: 'inicio', img: 'chispa-reposo', nombre: 'Hoguera' },
   { id: 'compras', img: 'icono-compras', nombre: 'Compras' },
   { id: 'cocina', icono: '🍳', nombre: 'Cocina' },
-  { id: 'agenda', icono: '📅', nombre: 'Agenda' },
+  { id: 'agenda', img: 'icono-agenda', nombre: 'Agenda' },
   { id: 'casa', img: 'icono-casa', nombre: 'Casa' },
 ]
 

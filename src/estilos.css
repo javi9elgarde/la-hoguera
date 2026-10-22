@@ -311,7 +311,9 @@ h1 .icono-img, h2 .icono-img { display: inline-block; width: 1.3em; height: 1.3e
 @keyframes aparecer { from { opacity: 0; } }
 .chispa-encima { margin-bottom: -18px; z-index: 1; animation: asomar 0.35s cubic-bezier(0.3, 1.5, 0.6, 1); }
 .chispa-encima .personaje { pointer-events: none; animation: flotar 2.4s ease-in-out infinite; }
-.chispa-encima .llama { width: min(150px, 20dvh); height: auto; filter: drop-shadow(0 8px 18px rgba(232, 131, 58, 0.45)); }
+.chispa-encima .llama { height: auto; filter: drop-shadow(0 8px 18px rgba(232, 131, 58, 0.45)); }
 @keyframes asomar { from { transform: translateY(60px) scale(0.6); opacity: 0; } }
 @keyframes flotar { 50% { transform: translateY(-6px); } }
-.velo-chispa .burbuja { max-height: calc(75dvh - min(150px, 20dvh)); }
+.velo-chispa { justify-content: flex-end; }
+.velo-chispa .burbuja { max-height: none; flex-shrink: 1; min-height: 0; overflow-y: auto; }
+.chispa-encima { flex-shrink: 0; }
